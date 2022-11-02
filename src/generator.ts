@@ -4,7 +4,7 @@ import path from "path";
 import { Options, resolveConfig } from "prettier";
 import { GeneratorPathNotExists } from "./error-handler";
 import { genEnum } from "./converters/enum";
-import { writeFileSafely } from "@utils/writeFileSafely";
+import { writeFileSafely } from "./utils/writeFileSafely";
 const { version } = require("../package.json");
 
 export const PrismaNestBaseGeneratorOptions = {
@@ -54,6 +54,14 @@ export class PrismaGenerator {
             (resolveConfig.sync(process.cwd()) as Options);
     }
 
+    static getInstance(options: GeneratorOptions) {
+        if (PrismaGenerator.instance) {
+            return PrismaGenerator.instance;
+        }
+        PrismaGenerator.instance = new PrismaGenerator(options);
+        return PrismaGenerator.instance;
+    }
+
     public get options() {
         return this._options;
     }
@@ -100,6 +108,7 @@ export class PrismaGenerator {
 
             const writeLocation = path.join(
                 this._options.generator.output?.value!,
+                `enums`,
                 `${enumInfo.name}.ts`
             );
 
@@ -114,11 +123,13 @@ export class PrismaGenerator {
         // set path to the client
         //    const config = this.getConfig();
         this.setPrismaClientPath();
-        logger.info(`starting config: ${JSON.stringify(config)}`);
+        // logger.info(`starting config: ${JSON.stringify(config)}`);
 
         // const convertor = PrismaConvertor.getInstance();
         // convertor.dmmf = dmmf;
         // convertor.config = config;
+
+        // write the enums
         await this.writeEnums();
     };
 }

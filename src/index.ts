@@ -4,7 +4,8 @@ import { generatorHandler, GeneratorOptions } from "@prisma/generator-helper";
 import { logger } from "@prisma/sdk";
 import path from "path";
 import { GENERATOR_NAME } from "./constants";
-import { writeFileSafely } from "./utils/writeFileSafely";
+import { handleGenerateError } from "./error-handler";
+import { PrismaGenerator } from "./generator";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version } = require("../package.json");
@@ -20,15 +21,13 @@ generatorHandler({
         };
     },
     onGenerate: async (options: GeneratorOptions) => {
-        options.dmmf.datamodel.enums.forEach(async (enumInfo) => {
-            const tsEnum = genEnum(enumInfo);
-
-            const writeLocation = path.join(
-                options.generator.output?.value!,
-                `${enumInfo.name}.ts`
-            );
-
-            await writeFileSafely(writeLocation, tsEnum);
-        });
+        try {
+            return await PrismaGenerator.getInstance(options).run();
+        } catch (error) {
+            handleGenerateError(error as Error);
+            return;
+        }
     }
 });
+
+logger.info("Handler Registered.");
