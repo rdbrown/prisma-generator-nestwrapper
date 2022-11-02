@@ -1,4 +1,4 @@
-export interface SwaggerDecoratorParams {
+export interface ISwaggerDecoratorParams {
     isArray?: boolean;
     type?: string;
     enum?: string;

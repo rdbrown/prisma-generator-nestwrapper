@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
-import { genEnum } from "./converters/enum";
 import { generatorHandler, GeneratorOptions } from "@prisma/generator-helper";
 import { logger } from "@prisma/sdk";
-import path from "path";
 import { GENERATOR_NAME } from "./constants";
 import { handleGenerateError } from "./error-handler";
 import { PrismaGenerator } from "./generator";
@@ -29,5 +27,3 @@ generatorHandler({
         }
     }
 });
-
-logger.info("Handler Registered.");

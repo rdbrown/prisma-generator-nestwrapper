@@ -2,8 +2,9 @@ import { GeneratorOptions } from "@prisma/generator-helper";
 import { logger, parseEnvValue } from "@prisma/sdk";
 import path from "path";
 import { Options, resolveConfig } from "prettier";
-import { GeneratorPathNotExists } from "./error-handler";
 import { genEnum } from "./converters/enum";
+import { genModel } from "./converters/model";
+import { GeneratorPathNotExists } from "./error-handler";
 import { writeFileSafely } from "./utils/writeFileSafely";
 const { version } = require("../package.json");
 
@@ -116,6 +117,22 @@ export class PrismaGenerator {
         });
     };
 
+    writeModels = async () => {
+        let models = "";
+
+        for await (const modelInfo of this._options.dmmf.datamodel.models) {
+            const tsModel = await genModel(modelInfo);
+            //   logger.info(`model info ${tsModel}`);
+            models += tsModel;
+        }
+        logger.log(`these are models; ${models}`);
+        const writeLocation = path.join(
+            this._options.generator.output?.value!,
+            `models.ts`
+        );
+        await writeFileSafely(writeLocation, models);
+    };
+
     run = async (): Promise<void> => {
         const { generator, dmmf } = this.options;
         const output = parseEnvValue(generator.output!);
@@ -131,5 +148,8 @@ export class PrismaGenerator {
 
         // write the enums
         await this.writeEnums();
+
+        // create the models
+        await this.writeModels();
     };
 }

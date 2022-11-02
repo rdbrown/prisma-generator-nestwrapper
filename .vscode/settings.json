@@ -1,4 +1,16 @@
 {
-    "cSpell.words": ["DMMF", "nestjs", "nestwrapper"],
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll": true,
+        "source.organizeImports": true
+    },
+    "cSpell.words": [
+        "autoincrement",
+        "Datamodel",
+        "DMMF",
+        "nestjs",
+        "nestwrapper"
+    ],
     "workbench.colorTheme": "Colorful-Dark-Theme"
 }

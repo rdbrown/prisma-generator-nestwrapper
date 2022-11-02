@@ -1,6 +1,6 @@
 import { DMMF } from "@prisma/generator-helper";
 
-export interface ConvertModelInput {
+export interface IConvertModelInput {
     model: DMMF.Model;
     extractRelationFields?: boolean;
     postfix?: string;

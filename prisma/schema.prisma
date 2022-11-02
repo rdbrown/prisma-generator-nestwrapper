@@ -24,10 +24,37 @@ model UpdateVideoYoutube {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  createdAt DateTime       @default(now())
+  email     String
+  firstName String?
+  id        String         @id @default(cuid())
+  lastName  String?
+  password  String
+  roles     EnumUserRole[]
+  updatedAt DateTime       @updatedAt
+  username  String         @unique
+  Book      Book[]
 }
+
+
+model Book {
+  /// @BReadOnly
+  /// @BCreatedAt
+  createdAt           DateTime      @default(now())
+   /// @BPk
+  id                  Int           @id @default(autoincrement())
+  isPrimary           Boolean?
+  name                String        @unique
+  /// @DtoRelationRequired
+  /// @DtoRelationCanCreateOnCreate
+  /// @DtoRelationCanConnectOnCreate
+  owner               User?         @relation(fields: [ownerId], references: [id])
+  ownerId             String?
+ primaryCurrencyCode String
+  /// @DtoReadOnly
+  updatedAt           DateTime      @updatedAt 
+}
+
 
 enum NotificationType {
   newPosts
@@ -46,4 +73,11 @@ enum Language {
   Go
   Python
   Cpp
+}
+
+
+enum EnumUserRole {
+  ROOT
+  ADMIN
+  CLIENT
 }
