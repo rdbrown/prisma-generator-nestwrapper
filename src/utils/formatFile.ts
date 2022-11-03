@@ -1,3 +1,4 @@
+import { logger } from "@prisma/sdk";
 import prettier from "prettier";
 
 export const formatFile = (content: string): Promise<string> => {
@@ -9,6 +10,7 @@ export const formatFile = (content: string): Promise<string> => {
         }
 
         try {
+            logger.info(`going to write ${content}`);
             const formatted = prettier.format(content, {
                 ...pConfig,
                 parser: "typescript"

@@ -7,10 +7,11 @@
     },
     "cSpell.words": [
         "autoincrement",
+        "commentdisclaimer",
         "Datamodel",
         "DMMF",
         "nestjs",
         "nestwrapper"
     ],
-    "workbench.colorTheme": "Braver's Solarized Dark (themed workbench)"
+    "workbench.colorTheme": "Colorful-Dark-Theme"
 }
