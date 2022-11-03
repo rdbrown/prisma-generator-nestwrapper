@@ -5,9 +5,10 @@ import { FieldComponent } from "../components/Field";
 import { IField } from "../interfaces/IField";
 import commentdisclaimer from "../templates/commentdisclamer";
 import { importGenerator } from "../templates/index";
-export class Model {
+export class ModelConverter {
     name: string;
     pk: string;
+    _rawModel: DMMF.Model;
     uniqueFields: string[];
     requiredFields: string[];
     readonlyFields: string[] = ["createdAt", "updatedAt"];
@@ -18,9 +19,12 @@ export class Model {
     enumString: string = "";
     relationString: string = "";
     defaultImports: string = "";
+    disclaimer = `${commentdisclaimer}\n\n\n`;
+    importString?: string;
 
     constructor(options: DMMF.Model) {
         this.name = options.name;
+        this._rawModel = options;
         this.genDefaultImportsString();
         const fields: IField[] = options.fields.map((f): IField => {
             return {
@@ -77,37 +81,10 @@ export class Model {
         this.defaultImports = iString;
     }
     async genModel() {
-        return `${commentdisclaimer}\n\n\n
+        return `${this.disclaimer}\n\n\n
         ${this.defaultImports}
         ${this.relationString};
         ${this.enumString};
         export class ${this.name} {${this.fieldString}}`;
     }
 }
-export const genModel = async (options: DMMF.Model) => {
-    // logger.info("genModel" + JSON.stringify(options));
-    let _enums = [];
-    let _imports = [];
-
-    const fields: IField[] = options.fields.map((f): IField => {
-        return {
-            name: f.name,
-            type: f.type as DefaultPrismaFieldType,
-            pk: f.isId,
-            kind: f.kind,
-            unique: f.isUnique,
-            required: f.isRequired,
-            readonly: f.isReadOnly,
-            decorations: f.documentation || ""
-        };
-    });
-    logger.info("genModel" + JSON.stringify(fields));
-    let fieldString = "";
-    fields.forEach((f) => {
-        const fieldC = new FieldComponent(f);
-        _enums.push(...fieldC._enums);
-        _imports.push(...fieldC._relations);
-        fieldString += `${fieldC.fieldToStringTemplate()}\n`;
-    });
-    return `export class ${options.name} {${fieldString}}`;
-};

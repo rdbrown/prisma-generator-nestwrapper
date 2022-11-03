@@ -9,37 +9,9 @@
  * ******************************************************************************************************************
  ******************************************************************************************************************/
 
-import { ApiProperty } from "@nestjs/swagger";
-import { EnumUserRole } from "../enums/EnumUserRole";
-import { Book } from "./Book";
-export class User {
-    @ApiProperty()
-    createdAt: Date;
+import { Injectable } from "@nestjs/common";
+import { Prisma } from "@prisma/client";
+import { PrismaService } from "nestjs-prisma";
 
-    @ApiProperty()
-    email: string;
-
-    @ApiProperty()
-    firstName: string;
-
-    @ApiProperty()
-    id: string;
-
-    @ApiProperty()
-    lastName: string;
-
-    @ApiProperty()
-    password: string;
-
-    @ApiProperty()
-    roles: EnumUserRole;
-
-    @ApiProperty()
-    updatedAt: Date;
-
-    @ApiProperty()
-    username: string;
-
-    @ApiProperty()
-    Book: Book;
-}
+@Injectable()
+export class UpdateVideoYoutubeServiceBase {}

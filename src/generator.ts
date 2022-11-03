@@ -2,8 +2,8 @@ import { GeneratorOptions } from "@prisma/generator-helper";
 import { logger, parseEnvValue } from "@prisma/sdk";
 import path from "path";
 import { Options, resolveConfig } from "prettier";
+import { ModelConverter, ServiceConverter } from "./converters";
 import { genEnum } from "./converters/enum";
-import { Model } from "./converters/model";
 import { GeneratorPathNotExists } from "./error-handler";
 import { writeFileSafely } from "./utils/writeFileSafely";
 const { version } = require("../package.json");
@@ -124,7 +124,7 @@ export class PrismaGenerator {
             `models/`
         );
         for await (const modelInfo of this._options.dmmf.datamodel.models) {
-            const tsModel = new Model(modelInfo);
+            const tsModel = new ModelConverter(modelInfo);
             const _data = await tsModel.genModel();
             //   logger.info(`model info ${tsModel}`);
             models += _data;
@@ -136,6 +136,26 @@ export class PrismaGenerator {
         logger.log(`these are models; ${models}`);
 
         // await writeFileSafely(writeLocation, models);
+    };
+
+    writeServices = async () => {
+        let services = "";
+
+        for await (const modelInfo of this._options.dmmf.datamodel.models) {
+            const service = new ServiceConverter(modelInfo);
+            const _data = await service.genService();
+            const writeLocation = path.join(
+                this._options.generator.output?.value!,
+                `${service.name}`
+            );
+            //   logger.info(`model info ${tsModel}`);
+            services += _data;
+            await writeFileSafely(
+                path.join(writeLocation, `${modelInfo.name}ServiceBase.ts`),
+                _data
+            );
+        }
+        logger.log(`these are services; ${services}`);
     };
 
     run = async (): Promise<void> => {
@@ -156,5 +176,8 @@ export class PrismaGenerator {
 
         // create the models
         await this.writeModels();
+
+        // create the services
+        await this.writeServices();
     };
 }

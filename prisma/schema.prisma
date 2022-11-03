@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 generator custom_generator {
   provider = "node dist/bin.js"
-  output   = "../src/gen"
+  output   = "../base"
   //config   = "conf.json"
 }
 
@@ -20,7 +20,7 @@ model UpdateVideoYoutube {
   id        Int      @id @default(autoincrement())
   created   Int
   updated   Int
-  createdAt DateTime @default(now())
+  createdAt DateTime @default(now()) 
 }
 
 model User {
