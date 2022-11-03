@@ -24,11 +24,14 @@ model UpdateVideoYoutube {
 }
 
 model User {
+   /// B$CreatedAt
   createdAt DateTime       @default(now())
+  /// B$Email
   email     String
   firstName String?
   id        String         @id @default(cuid())
   lastName  String?
+  /// B$Password
   password  String
   roles     EnumUserRole[]
   updatedAt DateTime       @updatedAt
@@ -38,20 +41,19 @@ model User {
 
 
 model Book {
-  /// @BReadOnly
-  /// @BCreatedAt
-  createdAt           DateTime      @default(now())
-   /// @BPk
+  /// B$CreatedAt
+  createdAt           DateTime      @default(now()) 
+   /// B$Pk
   id                  Int           @id @default(autoincrement())
   isPrimary           Boolean?
   name                String        @unique
-  /// @DtoRelationRequired
-  /// @DtoRelationCanCreateOnCreate
-  /// @DtoRelationCanConnectOnCreate
+  /// B$RelationRequired
+  /// B$RelationCanCreateOnCreate
+  /// B$RelationCanConnectOnCreate
   owner               User?         @relation(fields: [ownerId], references: [id])
   ownerId             String?
  primaryCurrencyCode String
-  /// @DtoReadOnly
+  /// B$ReadOnly
   updatedAt           DateTime      @updatedAt 
 }
 
