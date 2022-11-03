@@ -13,5 +13,9 @@
         "nestjs",
         "nestwrapper"
     ],
-    "workbench.colorTheme": "Colorful-Dark-Theme"
+    "workbench.colorTheme": "Colorful-Dark-Theme",
+    "[dockerfile]": {
+        "editor.defaultFormatter": "ms-azuretools.vscode-docker"
+    },
+    "js/ts.implicitProjectConfig.experimentalDecorators": true
 }

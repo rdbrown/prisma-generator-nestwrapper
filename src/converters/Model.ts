@@ -1,10 +1,10 @@
 import { DMMF } from "@prisma/generator-helper";
 import { logger } from "@prisma/sdk";
-import { importGenerator } from "@templates/index";
 import { DefaultPrismaFieldType } from "src/types";
 import { FieldComponent } from "../components/Field";
 import { IField } from "../interfaces/IField";
 import commentdisclaimer from "../templates/commentdisclamer";
+import { importGenerator } from "../templates/index";
 export class Model {
     name: string;
     pk: string;
@@ -78,6 +78,7 @@ export class Model {
     }
     async genModel() {
         return `${commentdisclaimer}\n\n\n
+        ${this.defaultImports}
         ${this.relationString};
         ${this.enumString};
         export class ${this.name} {${this.fieldString}}`;

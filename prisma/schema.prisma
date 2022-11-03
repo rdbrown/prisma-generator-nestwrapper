@@ -1,8 +1,8 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 generator custom_generator {
-  provider = "node -r ts-node/register src/index.ts"
-  output   = "../gen"
+  provider = "node dist/bin.js"
+  output   = "../src/gen"
   //config   = "conf.json"
 }
 

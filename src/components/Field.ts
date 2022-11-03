@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { DMMF } from "@prisma/generator-helper";
+import { logger } from "@prisma/sdk";
 import { IField } from "../interfaces/IField";
 import { fieldGeneratorGeneral } from "../templates/index";
 import { DefaultPrismaFieldType } from "../types";
@@ -35,9 +36,7 @@ export class FieldComponent {
         if (options.readonly) {
             this.readonly = options.readonly;
         }
-        if (options.decorations) {
-            this.decorations = options.decorations;
-        }
+        this.decorations = `@ApiProperty()\n`;
         this.mapFieldType();
     }
 
@@ -61,6 +60,7 @@ export class FieldComponent {
     }
 
     fieldToStringTemplate(): string {
+        logger.info(`check decorations: ${this.decorations}`);
         return fieldGeneratorGeneral(this.name, this.tsType, this.decorations);
     }
 

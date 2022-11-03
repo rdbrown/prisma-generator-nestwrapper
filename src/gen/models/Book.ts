@@ -9,12 +9,30 @@
  * ******************************************************************************************************************
  ******************************************************************************************************************/
 
-export class UpdateVideoYoutube {
+import { ApiProperty } from "@nestjs/swagger";
+import { User } from "./User";
+export class Book {
+    @ApiProperty()
+    createdAt: Date;
+
+    @ApiProperty()
     id: number;
 
-    created: number;
+    @ApiProperty()
+    isPrimary: boolean;
 
-    updated: number;
+    @ApiProperty()
+    name: string;
 
-    createdAt: Date;
+    @ApiProperty()
+    owner: User;
+
+    @ApiProperty()
+    ownerId: string;
+
+    @ApiProperty()
+    primaryCurrencyCode: string;
+
+    @ApiProperty()
+    updatedAt: Date;
 }

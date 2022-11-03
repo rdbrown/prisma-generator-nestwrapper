@@ -9,29 +9,17 @@
  * ******************************************************************************************************************
  ******************************************************************************************************************/
 
-import { Book } from "./Book";
-import { EnumUserRole } from "../enums/EnumUserRole";
-export class User {
-    B$CreatedAt;
+import { ApiProperty } from "@nestjs/swagger";
+export class UpdateVideoYoutube {
+    @ApiProperty()
+    id: number;
+
+    @ApiProperty()
+    created: number;
+
+    @ApiProperty()
+    updated: number;
+
+    @ApiProperty()
     createdAt: Date;
-
-    B$Email;
-    email: string;
-
-    firstName: string;
-
-    id: string;
-
-    lastName: string;
-
-    B$Password;
-    password: string;
-
-    roles: EnumUserRole;
-
-    updatedAt: Date;
-
-    username: string;
-
-    Book: Book;
 }

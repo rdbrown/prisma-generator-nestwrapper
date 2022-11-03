@@ -9,27 +9,37 @@
  * ******************************************************************************************************************
  ******************************************************************************************************************/
 
-import { User } from "./User";
-export class Book {
-    B$CreatedAt;
+import { ApiProperty } from "@nestjs/swagger";
+import { EnumUserRole } from "../enums/EnumUserRole";
+import { Book } from "./Book";
+export class User {
+    @ApiProperty()
     createdAt: Date;
 
-    B$Pk;
-    id: number;
+    @ApiProperty()
+    email: string;
 
-    isPrimary: boolean;
+    @ApiProperty()
+    firstName: string;
 
-    name: string;
+    @ApiProperty()
+    id: string;
 
-    B$RelationRequired;
-    B$RelationCanCreateOnCreate;
-    B$RelationCanConnectOnCreate;
-    owner: User;
+    @ApiProperty()
+    lastName: string;
 
-    ownerId: string;
+    @ApiProperty()
+    password: string;
 
-    primaryCurrencyCode: string;
+    @ApiProperty()
+    roles: EnumUserRole;
 
-    B$ReadOnly;
+    @ApiProperty()
     updatedAt: Date;
+
+    @ApiProperty()
+    username: string;
+
+    @ApiProperty()
+    Book: Book;
 }
