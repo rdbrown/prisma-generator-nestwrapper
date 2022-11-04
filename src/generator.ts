@@ -6,6 +6,7 @@ import { ModelConverter, ServiceConverter } from "./converters";
 import { genEnum } from "./converters/enum";
 import { GeneratorPathNotExists } from "./error-handler";
 import { writeFileSafely } from "./utils/writeFileSafely";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version } = require("../package.json");
 
 export const PrismaNestBaseGeneratorOptions = {
@@ -49,13 +50,14 @@ export class PrismaGenerator {
         //     this._options = options;
         // }
         this._options = options;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const output = parseEnvValue(this._options.generator.output!);
         this._prettierOptions =
             resolveConfig.sync(output, { useCache: false }) ||
             (resolveConfig.sync(process.cwd()) as Options);
     }
 
-    static getInstance(options: GeneratorOptions) {
+    static getInstance(options: GeneratorOptions): PrismaGenerator {
         if (PrismaGenerator.instance) {
             return PrismaGenerator.instance;
         }
@@ -63,6 +65,7 @@ export class PrismaGenerator {
         return PrismaGenerator.instance;
     }
 
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     public get options() {
         return this._options;
     }
@@ -71,7 +74,7 @@ export class PrismaGenerator {
         this._options = value;
     }
 
-    public get prettierOptions() {
+    public get prettierOptions(): Options {
         return this._prettierOptions;
     }
 
@@ -79,7 +82,7 @@ export class PrismaGenerator {
         this._prettierOptions = value;
     }
 
-    getClientImportPath() {
+    getClientImportPath(): string {
         if (!this.rootPath || !this.clientPath) {
             throw new GeneratorPathNotExists();
         }
@@ -103,12 +106,12 @@ export class PrismaGenerator {
         this.clientPath = clientGenerator?.output?.value ?? defaultPath;
     }
 
-    writeEnums = async () => {
+    writeEnums = async (): Promise<void> => {
         this._options.dmmf.datamodel.enums.forEach(async (enumInfo) => {
             const tsEnum = genEnum(enumInfo);
 
             const writeLocation = path.join(
-                this._options.generator.output?.value!,
+                this._options.generator.output?.value || "",
                 `enums`,
                 `${enumInfo.name}.ts`
             );
@@ -117,10 +120,10 @@ export class PrismaGenerator {
         });
     };
 
-    writeModels = async () => {
+    writeModels = async (): Promise<void> => {
         let models = "";
         const writeLocation = path.join(
-            this._options.generator.output?.value!,
+            this._options.generator.output?.value || "",
             `models/`
         );
         for await (const modelInfo of this._options.dmmf.datamodel.models) {
@@ -133,19 +136,19 @@ export class PrismaGenerator {
                 _data
             );
         }
-        logger.log(`these are models; ${models}`);
+        logger.info(`Models generated: ${models.length}`);
 
         // await writeFileSafely(writeLocation, models);
     };
 
-    writeServices = async () => {
+    writeServices = async (): Promise<void> => {
         let services = "";
 
         for await (const modelInfo of this._options.dmmf.datamodel.models) {
             const service = new ServiceConverter(modelInfo);
             const _data = await service.genService();
             const writeLocation = path.join(
-                this._options.generator.output?.value!,
+                this._options.generator.output?.value || "",
                 `${service.name}`
             );
             //   logger.info(`model info ${tsModel}`);
@@ -155,12 +158,12 @@ export class PrismaGenerator {
                 _data
             );
         }
-        logger.log(`these are services; ${services}`);
+        logger.info(`Services Generate; ${services.length}`);
     };
 
     run = async (): Promise<void> => {
-        const { generator, dmmf } = this.options;
-        const output = parseEnvValue(generator.output!);
+        //     const { generator, dmmf } = this.options;
+        //    const output = parseEnvValue(generator.output!);
 
         // set path to the client
         //    const config = this.getConfig();

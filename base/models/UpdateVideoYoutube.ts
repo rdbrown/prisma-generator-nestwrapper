@@ -10,16 +10,15 @@
  ******************************************************************************************************************/
 
 import { ApiProperty } from "@nestjs/swagger";
+import { IsEmail } from "class-validator";
+
 export class UpdateVideoYoutube {
     @ApiProperty()
     id: number;
-
     @ApiProperty()
     created: number;
-
     @ApiProperty()
     updated: number;
-
     @ApiProperty()
     createdAt: Date;
 }

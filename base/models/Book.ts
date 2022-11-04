@@ -10,29 +10,24 @@
  ******************************************************************************************************************/
 
 import { ApiProperty } from "@nestjs/swagger";
+import { IsEmail } from "class-validator";
+
 import { User } from "./User";
 export class Book {
     @ApiProperty()
     createdAt: Date;
-
     @ApiProperty()
     id: number;
-
     @ApiProperty()
-    isPrimary: boolean;
-
+    isPrimary?: boolean;
     @ApiProperty()
     name: string;
-
     @ApiProperty()
-    owner: User;
-
+    owner?: User;
     @ApiProperty()
-    ownerId: string;
-
+    ownerId?: string;
     @ApiProperty()
     primaryCurrencyCode: string;
-
     @ApiProperty()
     updatedAt: Date;
 }

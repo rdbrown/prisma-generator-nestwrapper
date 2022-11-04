@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Dictionary } from "@prisma/internals";
-import { PrismaNestBaseGeneratorOptions } from "./generator";
 import { logger } from "@prisma/sdk";
+import { PrismaNestBaseGeneratorOptions } from "./generator";
 
 export class GeneratorFormatNotValidError extends Error {
     config: Dictionary<string>;
@@ -12,7 +13,7 @@ export class GeneratorFormatNotValidError extends Error {
 
 export class GeneratorPathNotExists extends Error {}
 
-export const handleGenerateError = (e: Error) => {
+export const handleGenerateError = (e: Error): void => {
     if (e instanceof GeneratorFormatNotValidError) {
         const options = Object.keys(PrismaNestBaseGeneratorOptions).map(
             (key) => {

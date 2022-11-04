@@ -10,8 +10,50 @@
  ******************************************************************************************************************/
 
 import { Injectable } from "@nestjs/common";
-import { Prisma } from "@prisma/client";
+import { Prisma, UpdateVideoYoutube } from "@prisma/client";
 import { PrismaService } from "nestjs-prisma";
 
 @Injectable()
-export class UpdateVideoYoutubeServiceBase {}
+export class UpdateVideoYoutubeServiceBase {
+    constructor(private prisma: PrismaService) {}
+
+    async create(
+        args: Prisma.UpdateVideoYoutubeCreateArgs
+    ): Promise<
+        Prisma.Prisma__UpdateVideoYoutubeClient<UpdateVideoYoutube | null>
+    > {
+        return await this.prisma.updateVideoYoutube.create(args);
+    }
+
+    async findAll(
+        args: Prisma.UpdateVideoYoutubeFindManyArgs
+    ): Promise<
+        Prisma.Prisma__UpdateVideoYoutubeClient<UpdateVideoYoutube[] | null>
+    > {
+        return await this.prisma.updateVideoYoutube.findMany(args);
+    }
+
+    async findOne(
+        args: Prisma.UpdateVideoYoutubeFindUniqueArgs
+    ): Promise<
+        Prisma.Prisma__UpdateVideoYoutubeClient<UpdateVideoYoutube | null>
+    > {
+        return await this.prisma.updateVideoYoutube.findUnique(args);
+    }
+
+    async update(
+        args: Prisma.UpdateVideoYoutubeUpdateArgs
+    ): Promise<
+        Prisma.Prisma__UpdateVideoYoutubeClient<UpdateVideoYoutube | null>
+    > {
+        return await this.prisma.updateVideoYoutube.update(args);
+    }
+
+    async remove(
+        args: Prisma.UpdateVideoYoutubeDeleteArgs
+    ): Promise<
+        Prisma.Prisma__UpdateVideoYoutubeClient<UpdateVideoYoutube | null>
+    > {
+        return await this.prisma.updateVideoYoutube.delete(args);
+    }
+}

@@ -1,9 +1,13 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { DMMF } from "@prisma/generator-helper";
 import { logger } from "@prisma/sdk";
-import { IField } from "../interfaces/IField";
+import { IField, IRelation } from "../interfaces/IField";
 import { fieldGeneratorGeneral } from "../templates/index";
 import { DefaultPrismaFieldType } from "../types";
+type InOut = {
+    input: string;
+    output: string;
+};
 export class FieldComponent {
     name: string;
     pk = false;
@@ -12,14 +16,19 @@ export class FieldComponent {
     type: DefaultPrismaFieldType;
     required = false;
     readonly = false;
-    decorations = "";
-    _decorations = `@ApiProperty();\n`;
+    _decorations = "";
+    docs: string[] = [];
+    stringedDecorations = `@ApiProperty()`;
     _enums: string[] = [];
     _relations: string[] = [];
     tsType?: string;
+    relationDetail?: IRelation;
 
     constructor(options: IField) {
         this.name = options.name;
+        if (options.relation) {
+            this.relationDetail = options.relation;
+        }
         if (options.kind) {
             this.kind = options.kind;
         }
@@ -36,7 +45,11 @@ export class FieldComponent {
         if (options.readonly) {
             this.readonly = options.readonly;
         }
-        this.decorations = `@ApiProperty()\n`;
+        if (options.decorations) {
+            this._decorations = options.decorations;
+        }
+        //this.decorations = `@ApiProperty()`;
+        this.generateDecorators();
         this.mapFieldType();
     }
 
@@ -60,8 +73,16 @@ export class FieldComponent {
     }
 
     fieldToStringTemplate(): string {
-        logger.info(`check decorations: ${this.decorations}`);
-        return fieldGeneratorGeneral(this.name, this.tsType, this.decorations);
+        if (this.relationDetail) {
+            this.required = this.relationDetail.isMandatory ? true : false;
+        }
+        logger.info(`check decorations: ${this.stringedDecorations}`);
+        const _name = this.required ? this.name : this.name + "?";
+        return fieldGeneratorGeneral(
+            `${_name}`,
+            this.tsType,
+            this.stringedDecorations
+        );
     }
 
     static MappedTypes = {
@@ -71,7 +92,22 @@ export class FieldComponent {
         Boolean: "boolean"
     };
 
-    static MappedDecorators = {
-        B$Email: "@IsEmail()"
-    };
+    static MappedDecorators: InOut[] = [
+        { input: "B$Email", output: "@IsEmail()" }
+    ];
+
+    generateDecorators(): void {
+        const ugly = this._decorations.split("\n");
+        logger.log(`ugly: ${ugly}`);
+        ugly.forEach((u) => {
+            const decResult = FieldComponent.MappedDecorators.find(
+                (x: InOut) => x.input === u
+            );
+            logger.log(`x: ${decResult}`);
+            if (decResult) {
+                const s = decResult.output;
+                this.stringedDecorations += s;
+            }
+        });
+    }
 }
