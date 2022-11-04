@@ -41,7 +41,7 @@ export class ModelConverter {
         this._fields = this.mapFields(options.fields);
         logger.info(`fields ${JSON.stringify(this._fields)}`);
         const tempPk = this._fields.filter((a) => a.pk);
-        // make all relate from fields options
+        // make all relate from fields optional
         for (let i = 0; i < this._fields.length; i++) {
             if (this.relationFields.includes(this._fields[i].name)) {
                 this._fields[i].required = false;
@@ -84,7 +84,24 @@ export class ModelConverter {
         );
         this.defaultImports = iString;
     }
-    async genModel(): Promise<string> {
+    genModel(): string {
+        const allDecorators = this._fields.flatMap((f) => f.docs);
+        logger.info(`all decorators ${JSON.stringify(allDecorators)}`);
+        let uniqueDecorators = allDecorators.reduce((acc: any[], cur: any) => {
+            if (!acc.includes(cur)) {
+                acc.push(cur);
+            }
+            return acc;
+        }, []);
+        uniqueDecorators = uniqueDecorators.map((x) =>
+            x.replace("@", "").replace("()", "@")
+        );
+        const formattedImports = `{ ${uniqueDecorators
+            .join(',')} }`;
+        this.defaultImports += `${importGenerator(
+            formattedImports,
+            `'class-validator'`
+        )};\n`;
         return `${this.disclaimer}\n\n\n
         ${this.defaultImports}
         ${this.relationString};

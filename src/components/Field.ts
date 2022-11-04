@@ -99,15 +99,40 @@ export class FieldComponent {
     generateDecorators(): void {
         const ugly = this._decorations.split("\n");
         logger.log(`ugly: ${ugly}`);
+
         ugly.forEach((u) => {
             const decResult = FieldComponent.MappedDecorators.find(
                 (x: InOut) => x.input === u
             );
             logger.log(`x: ${decResult}`);
+
             if (decResult) {
+                this.docs.push(decResult.output);
                 const s = decResult.output;
                 this.stringedDecorations += s;
             }
         });
+
+        if (!this.required) this.docs.push("@IsOptional()");
+        else this.docs.push("@IsNotEmpty()");
+
+        if (this._enums.length > 0) this.docs.push("@IsEnum()");
+
+        switch (this.type) {
+            case "DateTime":
+                this.docs.push("@IsDate()");
+                break;
+            case "String":
+                this.docs.push("@IsString()");
+                break;
+            case "Boolean":
+                this.docs.push("@IsBoolean()");
+                break;
+            case "BigInt":
+                this.docs.push("@IsInt()");
+                break;
+        }
+
+        this.stringedDecorations += this.docs.join(" ");
     }
 }
