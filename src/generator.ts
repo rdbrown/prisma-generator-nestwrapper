@@ -132,6 +132,21 @@ export class PrismaGenerator {
         for await (const modelInfo of this._options.dmmf.datamodel.models) {
             const tsModel = new ModelConverter(modelInfo);
             const _data = await tsModel.genModel();
+            const dtoPath = path.join(
+                this._options.generator.output?.value || "",
+                `${changeCase.camelCase(modelInfo.name)}`,
+                "dto"
+            );
+            const dtoFieldString = tsModel.genCreateDto();
+            await writeFileSafely(
+                path.join(
+                    dtoPath,
+                    `Create${changeCase.capitalCase(modelInfo.name, {
+                        delimiter: ""
+                    })}.dto.ts`
+                ),
+                dtoFieldString
+            );
             //   logger.info(`model info ${tsModel}`);
             models += _data;
             await writeFileSafely(

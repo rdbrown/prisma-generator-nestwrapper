@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "test": "jest",
-        "format": "prettier --write \"src/**/*.ts\" \"base/**/*.ts\"",
+        "format": "prettier --write \"src/**/*.ts\"",
         "lint": "eslint \"{src,apps,libs,test,base}/**/*.ts\" --fix",
         "start": "node dist/bin.js",
         "build": "rm -rf ./dist && rm -rf ./base && npx tsc",
