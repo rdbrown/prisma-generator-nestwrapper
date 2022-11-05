@@ -4,7 +4,7 @@ import { formatFile } from "./formatFile";
 
 export const writeFileSafely = async (
     writeLocation: string,
-    content: any
+    content: string
 ): Promise<void> => {
     fs.mkdirSync(path.dirname(writeLocation), {
         recursive: true
