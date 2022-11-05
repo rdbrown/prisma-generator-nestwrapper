@@ -119,6 +119,12 @@ export class FieldComponent {
 
         if (this._enums.length > 0) this.docs.push("@IsEnum()");
 
+        this.prismaToDecorate();
+
+        this.stringedDecorations += this.docs.join(" ");
+    }
+
+    prismaToDecorate(): void {
         switch (this.type) {
             case "DateTime":
                 this.docs.push("@IsDate()");
@@ -133,7 +139,5 @@ export class FieldComponent {
                 this.docs.push("@IsInt()");
                 break;
         }
-
-        this.stringedDecorations += this.docs.join(" ");
     }
 }
