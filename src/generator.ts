@@ -46,6 +46,7 @@ export class PrismaGenerator {
     _prettierOptions: Options;
     rootPath!: string;
     clientPath!: string;
+    // wrapper: Wrapper;
 
     constructor(options: GeneratorOptions) {
         // if (options) {
