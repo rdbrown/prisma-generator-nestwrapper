@@ -29,27 +29,27 @@ export class UserServiceBase {
         return await this.prisma.user.create<T>(args);
     }
 
-    async findAll(
-        args: Prisma.UserFindManyArgs
-    ): Promise<Prisma.Prisma__UserClient<User[] | null>> {
+    async findMany<T extends Prisma.UserFindManyArgs>(
+        args: Prisma.SelectSubset<T, Prisma.UserFindManyArgs>
+    ): Promise<User[]> {
         return await this.prisma.user.findMany(args);
     }
 
-    async findOne(
-        args: Prisma.UserFindUniqueArgs
-    ): Promise<Prisma.Prisma__UserClient<User | null>> {
+    async findOne<T extends Prisma.UserFindUniqueArgs>(
+        args: Prisma.SelectSubset<T, Prisma.UserFindUniqueArgs>
+    ): Promise<User | null> {
         return await this.prisma.user.findUnique(args);
     }
 
-    async update(
-        args: Prisma.UserUpdateArgs
-    ): Promise<Prisma.Prisma__UserClient<User | null>> {
-        return await this.prisma.user.update(args);
+    async update<T extends Prisma.UserUpdateArgs>(
+        args: Prisma.SelectSubset<T, Prisma.UserUpdateArgs>
+    ): Promise<User> {
+        return await this.prisma.user.update<T>(args);
     }
 
-    async remove(
-        args: Prisma.UserDeleteArgs
-    ): Promise<Prisma.Prisma__UserClient<User | null>> {
+    async remove<T extends Prisma.UserDeleteArgs>(
+        args: Prisma.SelectSubset<T, Prisma.UserDeleteArgs>
+    ): Promise<User> {
         return await this.prisma.user.delete(args);
     }
 }

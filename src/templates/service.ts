@@ -30,19 +30,27 @@ export const TServiceCrud = (options: NameCases): string => {
         );
       }
 
-    async findAll(args: Prisma.${options.title}FindManyArgs):Promise<Prisma.Prisma__${options.title}Client<${options.title}[]| null>>  {
+    async findMany<T extends Prisma.${options.title}FindManyArgs>(
+        args: Prisma.SelectSubset<T, Prisma.${options.title}FindManyArgs>
+      ): Promise<${options.title}[]> {
         return await this.prisma.${options.camel}.findMany(args);
     }
 
-    async  findOne(args: Prisma.${options.title}FindUniqueArgs):Promise<Prisma.Prisma__${options.title}Client<${options.title}| null>>   {
+    async  findOne<T extends Prisma.${options.title}FindUniqueArgs>(
+        args: Prisma.SelectSubset<T, Prisma.${options.title}FindUniqueArgs>
+      ): Promise<${options.title} | null>  {
         return await this.prisma.${options.camel}.findUnique(args);
     }
 
-    async   update(args: Prisma.${options.title}UpdateArgs):Promise<Prisma.Prisma__${options.title}Client<${options.title}| null>>  {
-        return await this.prisma.${options.camel}.update(args);
+    async   update<T extends Prisma.${options.title}UpdateArgs>(
+        args: Prisma.SelectSubset<T, Prisma.${options.title}UpdateArgs>
+      ): Promise<${options.title}>  {
+        return await this.prisma.${options.camel}.update<T>(args);
     }
 
-    async   remove(args:Prisma.${options.title}DeleteArgs):Promise<Prisma.Prisma__${options.title}Client<${options.title}| null>>   {
+    async   remove<T extends Prisma.${options.title}DeleteArgs>(
+        args: Prisma.SelectSubset<T, Prisma.${options.title}DeleteArgs>
+      ): Promise<${options.title}>   {
         return await this.prisma.${options.camel}.delete(args);
     }`;
 };

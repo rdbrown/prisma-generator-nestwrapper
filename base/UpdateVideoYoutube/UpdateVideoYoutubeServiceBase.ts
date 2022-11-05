@@ -29,35 +29,27 @@ export class UpdateVideoYoutubeServiceBase {
         return await this.prisma.updateVideoYoutube.create<T>(args);
     }
 
-    async findAll(
-        args: Prisma.UpdateVideoYoutubeFindManyArgs
-    ): Promise<
-        Prisma.Prisma__UpdateVideoYoutubeClient<UpdateVideoYoutube[] | null>
-    > {
+    async findMany<T extends Prisma.UpdateVideoYoutubeFindManyArgs>(
+        args: Prisma.SelectSubset<T, Prisma.UpdateVideoYoutubeFindManyArgs>
+    ): Promise<UpdateVideoYoutube[]> {
         return await this.prisma.updateVideoYoutube.findMany(args);
     }
 
-    async findOne(
-        args: Prisma.UpdateVideoYoutubeFindUniqueArgs
-    ): Promise<
-        Prisma.Prisma__UpdateVideoYoutubeClient<UpdateVideoYoutube | null>
-    > {
+    async findOne<T extends Prisma.UpdateVideoYoutubeFindUniqueArgs>(
+        args: Prisma.SelectSubset<T, Prisma.UpdateVideoYoutubeFindUniqueArgs>
+    ): Promise<UpdateVideoYoutube | null> {
         return await this.prisma.updateVideoYoutube.findUnique(args);
     }
 
-    async update(
-        args: Prisma.UpdateVideoYoutubeUpdateArgs
-    ): Promise<
-        Prisma.Prisma__UpdateVideoYoutubeClient<UpdateVideoYoutube | null>
-    > {
-        return await this.prisma.updateVideoYoutube.update(args);
+    async update<T extends Prisma.UpdateVideoYoutubeUpdateArgs>(
+        args: Prisma.SelectSubset<T, Prisma.UpdateVideoYoutubeUpdateArgs>
+    ): Promise<UpdateVideoYoutube> {
+        return await this.prisma.updateVideoYoutube.update<T>(args);
     }
 
-    async remove(
-        args: Prisma.UpdateVideoYoutubeDeleteArgs
-    ): Promise<
-        Prisma.Prisma__UpdateVideoYoutubeClient<UpdateVideoYoutube | null>
-    > {
+    async remove<T extends Prisma.UpdateVideoYoutubeDeleteArgs>(
+        args: Prisma.SelectSubset<T, Prisma.UpdateVideoYoutubeDeleteArgs>
+    ): Promise<UpdateVideoYoutube> {
         return await this.prisma.updateVideoYoutube.delete(args);
     }
 }

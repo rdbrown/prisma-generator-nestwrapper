@@ -29,27 +29,27 @@ export class BookServiceBase {
         return await this.prisma.book.create<T>(args);
     }
 
-    async findAll(
-        args: Prisma.BookFindManyArgs
-    ): Promise<Prisma.Prisma__BookClient<Book[] | null>> {
+    async findMany<T extends Prisma.BookFindManyArgs>(
+        args: Prisma.SelectSubset<T, Prisma.BookFindManyArgs>
+    ): Promise<Book[]> {
         return await this.prisma.book.findMany(args);
     }
 
-    async findOne(
-        args: Prisma.BookFindUniqueArgs
-    ): Promise<Prisma.Prisma__BookClient<Book | null>> {
+    async findOne<T extends Prisma.BookFindUniqueArgs>(
+        args: Prisma.SelectSubset<T, Prisma.BookFindUniqueArgs>
+    ): Promise<Book | null> {
         return await this.prisma.book.findUnique(args);
     }
 
-    async update(
-        args: Prisma.BookUpdateArgs
-    ): Promise<Prisma.Prisma__BookClient<Book | null>> {
-        return await this.prisma.book.update(args);
+    async update<T extends Prisma.BookUpdateArgs>(
+        args: Prisma.SelectSubset<T, Prisma.BookUpdateArgs>
+    ): Promise<Book> {
+        return await this.prisma.book.update<T>(args);
     }
 
-    async remove(
-        args: Prisma.BookDeleteArgs
-    ): Promise<Prisma.Prisma__BookClient<Book | null>> {
+    async remove<T extends Prisma.BookDeleteArgs>(
+        args: Prisma.SelectSubset<T, Prisma.BookDeleteArgs>
+    ): Promise<Book> {
         return await this.prisma.book.delete(args);
     }
 }
