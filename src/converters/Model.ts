@@ -82,6 +82,28 @@ export class ModelConverter {
         this.pk = tempPk[0].name;
         //  this.uniqueFields = [this.pk];
         this.requiredFields = [this.pk];
+
+        const allDecorators = this._fields.flatMap((f) => f.docs);
+        //    logger.info(`all decorators ${JSON.stringify(allDecorators)}`);
+        const uniqueDecorators = allDecorators.reduce(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (acc: any[], cur: any) => {
+                if (!acc.includes(cur)) {
+                    acc.push(cur);
+                }
+                return acc;
+            },
+            []
+        );
+        this.docs = uniqueDecorators.map((x) =>
+            x.replace("@", "").replace("()", "")
+        );
+        this.classValImports();
+        this.classTransformImports();
+        this.genImportsString();
+    }
+    createFields(): FieldComponent[] {
+        return this._fields.filter((f) => !f.pk && !f.readonly);
     }
     genEnumString(): void {
         let eString = "";
@@ -122,30 +144,25 @@ export class ModelConverter {
         });
     }
     genModel(): string {
-        const allDecorators = this._fields.flatMap((f) => f.docs);
-        //    logger.info(`all decorators ${JSON.stringify(allDecorators)}`);
-        const uniqueDecorators = allDecorators.reduce(
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (acc: any[], cur: any) => {
-                if (!acc.includes(cur)) {
-                    acc.push(cur);
-                }
-                return acc;
-            },
-            []
-        );
-        this.docs = uniqueDecorators.map((x) =>
-            x.replace("@", "").replace("()", "")
-        );
-        this.classValImports();
-        this.classTransformImports();
-        this.genImportsString();
-
         return `${this.disclaimer}\n\n\n
         ${this.importString}
         ${this.relationString};
         ${this.enumString};
         export class ${this.name} {${this.fieldString}}`;
+    }
+
+    genCreateDto(): string {
+        const dtoFields = this.createFields().map((f) => f);
+        let dtoFieldsString = "";
+        dtoFields.forEach((f) => {
+            dtoFieldsString += f.fieldToStringTemplate();
+        });
+        return `${this.disclaimer}\n\n\n
+        ${this.importString}
+        ${this.relationString}
+        ${this.enumString}
+        export class ${this.nameValues.title}\n
+        {${dtoFieldsString}}`;
     }
 
     classValImports(): void {
