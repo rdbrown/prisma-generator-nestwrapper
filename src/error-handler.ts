@@ -5,6 +5,7 @@ import { PrismaNestBaseGeneratorOptions } from "./generator";
 
 export class GeneratorFormatNotValidError extends Error {
     config: Dictionary<string>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     constructor(config: any) {
         super();
         this.config = config;

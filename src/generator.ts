@@ -7,7 +7,7 @@ import { genEnum } from "./converters/enum";
 import { GeneratorPathNotExists } from "./error-handler";
 import { writeFileSafely } from "./utils/writeFileSafely";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { version } = require("../package.json");
+//const { version } = require("../package.json");
 
 export const PrismaNestBaseGeneratorOptions = {
     makeIndexFile: {
@@ -35,6 +35,7 @@ export const PrismaNestBaseGeneratorOptions = {
 export type PrismaNestBaseGeneratorOptionsKeys =
     keyof typeof PrismaNestBaseGeneratorOptions;
 export type PrismaNestBaseGeneratorConfig = Partial<
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     Record<PrismaNestBaseGeneratorOptionsKeys, any>
 >;
 

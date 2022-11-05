@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export function ModuleDecoratorGenerator(
     IMPORTS: string,
     PROVIDERS: string,
