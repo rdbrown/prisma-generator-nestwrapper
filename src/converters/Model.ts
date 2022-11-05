@@ -27,14 +27,22 @@ export interface IImport {
     NAME: string;
     MODULE: string;
 }
+/**
+ * Primary functionality of package
+ */
 export class ModelConverter {
+    // provided name
     name: string;
+    // primary key string
     pk: string;
+    // DMMF
     _rawModel: DMMF.Model;
+    // organized decorators
     docs: string[] = [];
-    uniqueFields: string[];
+    // unique fields
+    //   uniqueFields: string[];
     requiredFields: string[];
-    readonlyFields: string[] = ["createdAt", "updatedAt"];
+    //   readonlyFields: string[] = ["createdAt", "updatedAt"];
     _enums: string[] = [];
     _relations: string[] = [];
     _fields: FieldComponent[];
@@ -54,7 +62,7 @@ export class ModelConverter {
         this.name = options.name;
         this.nameValues = ModelConverter.nameCases(this.name);
         this._rawModel = options;
-        this.genDefaultImportsString();
+        this.genImportsString();
         this._fields = this.mapFields(options.fields);
         logger.info(`fields ${JSON.stringify(this._fields)}`);
         const tempPk = this._fields.filter((a) => a.pk);
@@ -72,7 +80,7 @@ export class ModelConverter {
         this.genRelationString();
 
         this.pk = tempPk[0].name;
-        this.uniqueFields = [this.pk];
+        //  this.uniqueFields = [this.pk];
         this.requiredFields = [this.pk];
     }
     genEnumString(): void {
@@ -90,13 +98,28 @@ export class ModelConverter {
         this.relationString = rString;
         //  logger.info("relation string", this.relationString);
     }
-    genDefaultImportsString(): void {
+    genImportsString(): void {
         let iString = "";
 
         this._imports.forEach(
             (d) => (iString += `${importGenerator(d.NAME, d.MODULE)};\n`)
         );
         this.importString = iString;
+    }
+
+    uniqueFields(): FieldComponent[] {
+        return this._fields.filter((f) => {
+            return f.unique == true;
+        });
+    }
+
+    readOnlyFields(): FieldComponent[] {
+        return this._fields.filter((f) => {
+            return (
+                f.readonly == true ||
+                ["createdAt", "updatedAt"].includes(f.name)
+            );
+        });
     }
     genModel(): string {
         const allDecorators = this._fields.flatMap((f) => f.docs);
@@ -116,7 +139,7 @@ export class ModelConverter {
         );
         this.classValImports();
         this.classTransformImports();
-        this.genDefaultImportsString();
+        this.genImportsString();
 
         return `${this.disclaimer}\n\n\n
         ${this.importString}
