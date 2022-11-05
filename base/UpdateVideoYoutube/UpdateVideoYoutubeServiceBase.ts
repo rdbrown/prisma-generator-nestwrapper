@@ -17,12 +17,16 @@ import { PrismaService } from "nestjs-prisma";
 export class UpdateVideoYoutubeServiceBase {
     constructor(private prisma: PrismaService) {}
 
-    async create(
-        args: Prisma.UpdateVideoYoutubeCreateArgs
-    ): Promise<
-        Prisma.Prisma__UpdateVideoYoutubeClient<UpdateVideoYoutube | null>
-    > {
-        return await this.prisma.updateVideoYoutube.create(args);
+    async count<T extends Prisma.UpdateVideoYoutubeFindManyArgs>(
+        args: Prisma.SelectSubset<T, Prisma.UpdateVideoYoutubeFindManyArgs>
+    ): Promise<number> {
+        return this.prisma.updateVideoYoutube.count(args);
+    }
+
+    async create<T extends Prisma.UpdateVideoYoutubeCreateArgs>(
+        args: Prisma.SelectSubset<T, Prisma.UpdateVideoYoutubeCreateArgs>
+    ): Promise<UpdateVideoYoutube> {
+        return await this.prisma.updateVideoYoutube.create<T>(args);
     }
 
     async findAll(

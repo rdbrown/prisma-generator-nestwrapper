@@ -16,9 +16,19 @@ export const TService = (options: {
 };
 
 export const TServiceCrud = (options: NameCases): string => {
-    return `async create(args: Prisma.${options.title}CreateArgs):Promise<Prisma.Prisma__${options.title}Client<${options.title}| null>> {
-        return await this.prisma.${options.camel}.create(args);
-    }
+    return `
+    async count<T extends Prisma.${options.title}FindManyArgs>(
+        args: Prisma.SelectSubset<T, Prisma.${options.title}FindManyArgs>
+      ): Promise<number> {
+        return this.prisma.${options.camel}.count(args);
+      }
+
+      async create<T extends Prisma.${options.title}CreateArgs>(
+        args: Prisma.SelectSubset<T, Prisma.${options.title}CreateArgs>
+      ): Promise<${options.title}> {
+        return await this.prisma.${options.camel}.create<T>(args
+        );
+      }
 
     async findAll(args: Prisma.${options.title}FindManyArgs):Promise<Prisma.Prisma__${options.title}Client<${options.title}[]| null>>  {
         return await this.prisma.${options.camel}.findMany(args);

@@ -17,10 +17,16 @@ import { PrismaService } from "nestjs-prisma";
 export class BookServiceBase {
     constructor(private prisma: PrismaService) {}
 
-    async create(
-        args: Prisma.BookCreateArgs
-    ): Promise<Prisma.Prisma__BookClient<Book | null>> {
-        return await this.prisma.book.create(args);
+    async count<T extends Prisma.BookFindManyArgs>(
+        args: Prisma.SelectSubset<T, Prisma.BookFindManyArgs>
+    ): Promise<number> {
+        return this.prisma.book.count(args);
+    }
+
+    async create<T extends Prisma.BookCreateArgs>(
+        args: Prisma.SelectSubset<T, Prisma.BookCreateArgs>
+    ): Promise<Book> {
+        return await this.prisma.book.create<T>(args);
     }
 
     async findAll(
