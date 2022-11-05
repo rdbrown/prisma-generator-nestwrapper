@@ -6,7 +6,7 @@ import { fieldGeneratorGeneral } from "../templates/index";
 import { DefaultPrismaFieldType } from "../types";
 type InOut = {
     input: string;
-    output: string;
+    output: string[];
 };
 export class FieldComponent {
     name: string;
@@ -93,7 +93,8 @@ export class FieldComponent {
     };
 
     static MappedDecorators: InOut[] = [
-        { input: "B$Email", output: "@IsEmail()" }
+        { input: "B$Email", output: ["@IsEmail()"] },
+        { input: "B$Exclude", output: ["@Exclude()"] }
     ];
 
     generateDecorators(): void {
@@ -107,7 +108,7 @@ export class FieldComponent {
             logger.log(`x: ${decResult}`);
 
             if (decResult) {
-                this.docs.push(decResult.output);
+                this.docs.push(...decResult.output);
                 const s = decResult.output;
                 this.stringedDecorations += s;
             }

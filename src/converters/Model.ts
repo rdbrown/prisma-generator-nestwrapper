@@ -1,11 +1,19 @@
 import { DMMF } from "@prisma/generator-helper";
 import { logger } from "@prisma/sdk";
 import * as changeCase from "change-case";
-import { DefaultPrismaFieldType } from "src/types";
 import { FieldComponent } from "../components/Field";
 import { IField } from "../interfaces/IField";
 import commentdisclaimer from "../templates/commentdisclamer";
 import { importGenerator } from "../templates/index";
+import {
+    ClassTransformers,
+    ClassValidators,
+    DefaultPrismaFieldType
+} from "../types";
+import { convertBool } from "../utils/utils";
+
+type ClassValType = typeof ClassValidators[number];
+type ClassTransformType = typeof ClassTransformers[number];
 
 export type NameCases = {
     camel: string;
@@ -14,10 +22,16 @@ export type NameCases = {
     caps: string;
     title: string;
 };
+
+export interface IImport {
+    NAME: string;
+    MODULE: string;
+}
 export class ModelConverter {
     name: string;
     pk: string;
     _rawModel: DMMF.Model;
+    docs: string[] = [];
     uniqueFields: string[];
     requiredFields: string[];
     readonlyFields: string[] = ["createdAt", "updatedAt"];
@@ -30,6 +44,9 @@ export class ModelConverter {
     defaultImports = "";
     disclaimer = `${commentdisclaimer}\n\n\n`;
     importString?: string;
+    _imports: IImport[] = [
+        { NAME: `{ApiProperty}`, MODULE: `'@nestjs/swagger'` }
+    ];
     nameValues: NameCases;
     relationFields: string[] = [];
 
@@ -71,43 +88,86 @@ export class ModelConverter {
             (e) => (rString += `import {${e}} from "./${e}";\n`)
         );
         this.relationString = rString;
-        logger.info("relation string", this.relationString);
+        //  logger.info("relation string", this.relationString);
     }
     genDefaultImportsString(): void {
         let iString = "";
-        const defaultImports = [
-            { NAME: `{ApiProperty}`, MODULE: `'@nestjs/swagger'` },
-            { NAME: `{IsEmail}`, MODULE: `'class-validator'` }
-        ];
-        defaultImports.forEach(
+
+        this._imports.forEach(
             (d) => (iString += `${importGenerator(d.NAME, d.MODULE)};\n`)
         );
-        this.defaultImports = iString;
+        this.importString = iString;
     }
     genModel(): string {
         const allDecorators = this._fields.flatMap((f) => f.docs);
-        logger.info(`all decorators ${JSON.stringify(allDecorators)}`);
-        let uniqueDecorators = allDecorators.reduce((acc: any[], cur: any) => {
-            if (!acc.includes(cur)) {
-                acc.push(cur);
-            }
-            return acc;
-        }, []);
-        uniqueDecorators = uniqueDecorators.map((x) =>
-            x.replace("@", "").replace("()", "@")
+        //    logger.info(`all decorators ${JSON.stringify(allDecorators)}`);
+        const uniqueDecorators = allDecorators.reduce(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (acc: any[], cur: any) => {
+                if (!acc.includes(cur)) {
+                    acc.push(cur);
+                }
+                return acc;
+            },
+            []
         );
-        const formattedImports = `{ ${uniqueDecorators
-            .join(',')} }`;
-        this.defaultImports += `${importGenerator(
-            formattedImports,
-            `'class-validator'`
-        )};\n`;
+        this.docs = uniqueDecorators.map((x) =>
+            x.replace("@", "").replace("()", "")
+        );
+        this.classValImports();
+        this.classTransformImports();
+        this.genDefaultImportsString();
+
         return `${this.disclaimer}\n\n\n
-        ${this.defaultImports}
+        ${this.importString}
         ${this.relationString};
         ${this.enumString};
         export class ${this.name} {${this.fieldString}}`;
     }
+
+    classValImports(): void {
+        const classValues = this.docs.map((d) => {
+            if (this.isClassVal(d)) {
+                return d;
+            }
+        });
+        if (classValues.length > 0)
+            this._imports.push({
+                MODULE: `'class-validator'`,
+                NAME: `{${classValues.join(",").replace(",,", ",")}}`
+            });
+    }
+
+    private isClassVal = (classValKey: string): classValKey is ClassValType =>
+        ClassValidators.includes(classValKey as ClassValType);
+
+    classTransformImports(): void {
+        let classTransformers = this.docs.map((d) => {
+            logger.log(`check transformers ${JSON.stringify(d)}`);
+            if (this.isClassTransform(d) && this.isClassTransform(d) !== null) {
+                logger.log(`is transformer ${this.isClassTransform(d)}`);
+                return d;
+            } else return "";
+        });
+        logger.log(
+            `check all transformers ${JSON.stringify(classTransformers)}`
+        );
+        classTransformers = classTransformers.filter((x) => x !== "");
+        if (classTransformers.length > 0) {
+            logger.log(
+                `write transformers ${JSON.stringify(classTransformers)}`
+            );
+            this._imports.push({
+                NAME: `{${classTransformers.join(",").replace(",,", ",")}}`,
+                MODULE: `'class-transformer'`
+            });
+        }
+    }
+
+    private isClassTransform = (
+        classTransformKey: string
+    ): classTransformKey is ClassTransformType =>
+        ClassTransformers.includes(classTransformKey as ClassTransformType);
 
     static nameCases(opts: string): NameCases {
         return {
@@ -135,15 +195,14 @@ export class ModelConverter {
 
     mapFields(options: DMMF.Field[]): FieldComponent[] {
         const fields: IField[] = options.map((f): IField => {
-            logger.info(` raw filed : ${JSON.stringify(f)}`);
             return {
                 name: f.name,
                 type: f.type as DefaultPrismaFieldType,
-                pk: f.isId === false ? false : true,
+                pk: convertBool(f.isId),
                 kind: f.kind,
-                unique: f.isUnique === false ? false : true,
-                required: f.isRequired === false ? false : true,
-                readonly: f.isReadOnly === false ? false : true,
+                unique: convertBool(f.isUnique),
+                required: convertBool(f.isRequired),
+                readonly: convertBool(f.isReadOnly),
                 decorations: f.documentation || "",
                 ...(f.kind === "object" &&
                     f.relationFromFields &&
