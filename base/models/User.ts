@@ -10,17 +10,17 @@
  ******************************************************************************************************************/
 
 import { ApiProperty } from "@nestjs/swagger";
-import { Exclude } from "class-transformer";
 import {
+    IsNotEmpty,
     IsDate,
     IsEmail,
-    IsNotEmpty,
-    IsOptional,
-    IsString
+    IsString,
+    IsOptional
 } from "class-validator";
+import { Exclude } from "class-transformer";
 
-import { EnumUserRole } from "../enums/EnumUserRole";
 import { Book } from "./Book";
+import { EnumUserRole } from "../enums/EnumUserRole";
 export class User {
     @ApiProperty()
     @IsNotEmpty()

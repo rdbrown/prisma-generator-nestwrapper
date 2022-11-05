@@ -1,5 +1,6 @@
 import { GeneratorOptions } from "@prisma/generator-helper";
 import { logger, parseEnvValue } from "@prisma/sdk";
+import * as changeCase from "change-case";
 import path from "path";
 import { Options, resolveConfig } from "prettier";
 import { ModelConverter, ServiceConverter } from "./converters";
@@ -133,7 +134,10 @@ export class PrismaGenerator {
             //   logger.info(`model info ${tsModel}`);
             models += _data;
             await writeFileSafely(
-                path.join(writeLocation, `${modelInfo.name}.ts`),
+                path.join(
+                    writeLocation,
+                    `${changeCase.camelCase(modelInfo.name)}.ts`
+                ),
                 _data
             );
         }
