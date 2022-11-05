@@ -136,7 +136,9 @@ export class PrismaGenerator {
             await writeFileSafely(
                 path.join(
                     writeLocation,
-                    `${changeCase.camelCase(modelInfo.name)}.ts`
+                    `${changeCase.capitalCase(modelInfo.name, {
+                        delimiter: ""
+                    })}.ts`
                 ),
                 _data
             );
@@ -154,12 +156,15 @@ export class PrismaGenerator {
             const _data = await service.genService();
             const writeLocation = path.join(
                 this._options.generator.output?.value || "",
-                `${service.name}`
+                `${changeCase.camelCase(service.name)}`
             );
             //   logger.info(`model info ${tsModel}`);
             services += _data;
             await writeFileSafely(
-                path.join(writeLocation, `${modelInfo.name}ServiceBase.ts`),
+                path.join(
+                    writeLocation,
+                    `${changeCase.camelCase(modelInfo.name)}ServiceBase.ts`
+                ),
                 _data
             );
         }
