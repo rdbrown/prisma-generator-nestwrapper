@@ -9,7 +9,8 @@
         "lint": "eslint \"{src,apps,libs,test,base}/**/*.ts\" --fix",
         "start": "node dist/bin.js",
         "build": "rm -rf ./dist && rm -rf ./base && npx tsc",
-        "rebuild": "npm run build && npx prisma generate"
+        "rebuild": "npm run build && npx prisma generate",
+        "prepare": "husky install"
     },
     "bin": {
         "prisma-generator-nestwrapper": "dist/bin.js"
@@ -44,7 +45,9 @@
         "@types/node": "^16.6.2",
         "@types/prettier": "2.4.3",
         "eslint": "^8.26.0",
+        "husky": "^8.0.0",
         "jest": "^27.5.1",
+        "pretty-quick": "^3.1.3",
         "prisma": "^4.5.0",
         "release-it": "^14.12.4",
         "swagger-ui-express": "^4.1.6",
